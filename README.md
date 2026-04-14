@@ -6,7 +6,7 @@
 
 ## 🌐 Live Infrastructure (Template)
 - **Status**: TEMPLATE_READY
-- **Primary URL**: `https://[SERVICE_NAME]-[PROJECT_HASH].run.app`
+- **Primary URL**: [https://internshield-285066992940.us-central1.run.app](https://internshield-285066992940.us-central1.run.app)
 - **Deployment Strategy**: 100% Stateless Dockerized Ops on Google Cloud Run.
 
 ---
