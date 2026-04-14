@@ -40,6 +40,7 @@ InternShield is built on a **Zero-Persistence** security model, making it immune
 - **Heuristic Sandbox**: Rapid manual analysis of SMS, WhatsApp, or raw email text in a sanitized environment.
 
 ### 3. 📡 OSINT_PROBE (Infrastructure Radar)
+- **Community Intelligence**: Scans **Reddit** and **Glassdoor** for scam reports, interview red-flags, and corporate reputation.
 - **MCA Verification**: Checks company registration against official Indian registries (CIN validation).
 - **Web Intelligence**: Search stream scanning for scam complaints and reports via real-time search clusters.
 - **Whois Intelligence**: Detection of recently registered "burner" domains used in phishing.
