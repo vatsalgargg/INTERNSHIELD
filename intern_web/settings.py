@@ -110,8 +110,15 @@ if not DEBUG:
     SESSION_COOKIE_SAMESITE = 'Lax'
     CSRF_COOKIE_SECURE = True
     CSRF_COOKIE_HTTPONLY = True
-    
-    # Header Hardening
+else:
+    # Explicitly disable for local testing to avoid HSTS/SSL issues
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_HSTS_SECONDS = 0
+
+# Header Hardening
+if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'

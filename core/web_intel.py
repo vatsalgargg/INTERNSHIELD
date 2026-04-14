@@ -107,7 +107,14 @@ class WebIntelligence:
         else:
             result["linkedin_result"] = {"found": False, "is_suspicious": False, "snippet": "Skipped - API Key Missing"}
 
-        # 5. Check if search actually failed
+        # 5. Reddit & Glassdoor Community Intel
+        if api_ready:
+            result["community_reviews"] = self.check_community_reviews(company_name)
+            result["sources_checked"].append("Reddit & Glassdoor")
+        else:
+            result["community_reviews"] = {"reddit": [], "glassdoor": [], "skipped": True}
+
+        # 6. Check if search actually failed
         if self.last_error_code in [403, 401]:
             result["search_status"] = "auth_error"
         elif self.last_error_code == 429:
@@ -120,6 +127,43 @@ class WebIntelligence:
         result["is_indian_flag"]   = is_indian
         
         return result
+
+    def check_community_reviews(self, company_name: str) -> Dict[str, Any]:
+        """
+        Retrieves company reviews from Reddit and Glassdoor using site-specific searches.
+        """
+        community = {
+            "reddit": [],
+            "glassdoor": [],
+            "scam_sentiment_detected": False,
+            "snippet_count": 0
+        }
+
+        # 1. Reddit Search: targeted for scams/reviews
+        reddit_query = f'site:reddit.com "{company_name}" scam OR reviews OR legit'
+        reddit_results = self._serper_search(reddit_query)
+        for res in reddit_results[:3]: # Top 3 snippets
+            community["reddit"].append({
+                "title": res.get("title", ""),
+                "snippet": res.get("snippet", ""),
+                "link": res.get("link", "")
+            })
+            if any(k in res.get("snippet", "").lower() for k in ["scam", "fake", "predatory", "fraud"]):
+                community["scam_sentiment_detected"] = True
+
+        # 2. Glassdoor Search: targeted for salary/interviews/reviews
+        # We try .co.in first for Indian context, fallback or include .com
+        gd_query = f'site:glassdoor.co.in OR site:glassdoor.com "{company_name}" reviews OR "working at"'
+        gd_results = self._serper_search(gd_query)
+        for res in gd_results[:3]:
+            community["glassdoor"].append({
+                "title": res.get("title", ""),
+                "snippet": res.get("snippet", ""),
+                "link": res.get("link", "")
+            })
+
+        community["snippet_count"] = len(community["reddit"]) + len(community["glassdoor"])
+        return community
 
     def search_mca_registration(self, company_name: str) -> Dict[str, Any]:
         """
@@ -311,5 +355,10 @@ class WebIntelligence:
         elif li.get("is_suspicious"):
             score += 10
             signals.append("LinkedIn profile exists but claims 0-1 employees (suspicious/shell company signature)")
+
+        comm = result.get("community_reviews", {})
+        if comm.get("scam_sentiment_detected"):
+            score += 25
+            signals.append("🚨 COMMUNITY ALERT: Negative sentiment/scam reports found on Reddit/Community forums.")
 
         return min(score, 100), signals

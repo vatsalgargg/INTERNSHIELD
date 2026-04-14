@@ -182,10 +182,66 @@
                 {% endif %}
             </div>
             
-            <button class="w-full py-4 bg-primary text-background font-headline font-bold tracking-widest text-xs hover:brightness-110 active:scale-95 transition-all uppercase">
-                GENERATE_FORENSIC_SUMMARY
-            </button>
         </section>
+    </div>
+
+    <!-- Community Intelligence -->
+    {% if result.web_intel_result and result.web_intel_result.community_reviews and not result.web_intel_result.community_reviews.skipped %}
+    <section class="glass-module luminous-purple p-8 flex flex-col gap-6">
+        <div class="flex justify-between items-start">
+            <div class="space-y-1">
+                <span class="font-headline text-[10px] tracking-[0.2em] text-secondary/60 uppercase">Heuristic: CROWDSOURCED_INTEL</span>
+                <h2 class="font-headline text-xl font-bold text-secondary italic uppercase tracking-tighter">COMMUNITY_INTELLIGENCE (REDDIT & GLASSDOOR)</h2>
+            </div>
+            <div class="px-3 py-1 bg-secondary/10 border border-secondary/30">
+                <span class="font-headline text-[10px] font-bold text-secondary uppercase">{{ result.web_intel_result.community_reviews.snippet_count }} DATA_POINTS</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Reddit -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-orange-500">reddit</span>
+                    <span class="font-headline text-xs font-bold text-white uppercase tracking-widest">Reddit_Signals</span>
+                </div>
+                {% if result.web_intel_result.community_reviews.reddit %}
+                    {% for res in result.web_intel_result.community_reviews.reddit %}
+                    <a href="{{ res.link }}" target="_blank" class="block bg-black/40 border border-white/5 p-4 hover:border-orange-500/50 transition-all group decoration-none">
+                        <h5 class="font-headline text-[11px] text-white font-bold uppercase truncate group-hover:text-orange-400">{{ res.title }}</h5>
+                        <p class="font-body text-[10px] text-on-surface-variant line-clamp-2 mt-2">{{ res.snippet }}</p>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-4 border border-white/5 opacity-40 font-mono text-[10px] uppercase italic">Zero reddit signals captured</div>
+                {% endif %}
+            </div>
+
+            <!-- Glassdoor -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-green-500">reviews</span>
+                    <span class="font-headline text-xs font-bold text-white uppercase tracking-widest">Glassdoor_Profile</span>
+                </div>
+                {% if result.web_intel_result.community_reviews.glassdoor %}
+                    {% for res in result.web_intel_result.community_reviews.glassdoor %}
+                    <a href="{{ res.link }}" target="_blank" class="block bg-black/40 border border-white/5 p-4 hover:border-green-500/50 transition-all group decoration-none">
+                        <h5 class="font-headline text-[11px] text-white font-bold uppercase truncate group-hover:text-green-400">{{ res.title }}</h5>
+                        <p class="font-body text-[10px] text-on-surface-variant line-clamp-2 mt-2">{{ res.snippet }}</p>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-4 border border-white/5 opacity-40 font-mono text-[10px] uppercase italic">No Glassdoor records indexed</div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <div class="grid grid-cols-1 pb-12">
+        <button class="w-full py-4 bg-primary text-background font-headline font-bold tracking-widest text-xs hover:brightness-110 active:scale-95 transition-all uppercase">
+            GENERATE_FORENSIC_SUMMARY
+        </button>
     </div>
 </main>
 {% endif %}
