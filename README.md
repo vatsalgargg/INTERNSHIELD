@@ -1,12 +1,12 @@
 # InternShield — Forensic Intelligence Engine v5.0 🛡️🚀
 
-**InternShield** is a production-grade cybersecurity platform engineered to detect and neutralize recruitment scams and phishing threats through **Deep Infrastructure Forensics**. It moves beyond simple text analysis into real-time auditing of SSL trust chains, corporate registry footprints, and document metadata.
+**InternShield** is a high-fidelity forensic platform engineered to detect and neutralize recruitment scams and phishing threats through **Deep Infrastructure Forensics**. It moves beyond simple text analysis into real-time auditing of SSL trust chains, corporate registry footprints, and document metadata.
 
 ---
 
-## 🌐 Live Infrastructure
-- **Status**: OPERATIONAL (Production Hardened)
-- **Primary URL**: [https://internshield-285066992940.us-central1.run.app](https://internshield-285066992940.us-central1.run.app)
+## 🌐 Live Infrastructure (Template)
+- **Status**: TEMPLATE_READY
+- **Primary URL**: `https://[SERVICE_NAME]-[PROJECT_HASH].run.app`
 - **Deployment Strategy**: 100% Stateless Dockerized Ops on Google Cloud Run.
 
 ---
@@ -36,11 +36,11 @@ InternShield is built on a **Zero-Persistence** security model, making it immune
 - **Integrity Analysis**: Scans uploaded offer letters for linguistic red-flags and infrastructure trust.
 - **Metadata Fingerprinting**: Identifies original software source (e.g., flags "Google" offers made in "WPS Office").
 
-### 2. ⚡ LIVE_PASTE (Manual Source Entry)
+### 2. ⚡ LIVE_PASTE (Manual Override)
 - **Heuristic Sandbox**: Rapid manual analysis of SMS, WhatsApp, or raw email text in a sanitized environment.
 
 ### 3. 📡 OSINT_PROBE (Infrastructure Radar)
-- **MCA Verification**: Checks company registration status against official Indian registries (CIN validation).
+- **MCA Verification**: Checks company registration against official Indian registries (CIN validation).
 - **Web Intelligence**: Search stream scanning for scam complaints and reports via real-time search clusters.
 - **Whois Intelligence**: Detection of recently registered "burner" domains used in phishing.
 
@@ -74,10 +74,10 @@ Ensure these are set in your `.env` or deployment console:
 ### Deployment Commands
 ```bash
 # 1. Build the Forensic Image
-gcloud builds submit --tag gcr.io/internshield-493206/internshield
+gcloud builds submit --tag gcr.io/[PROJECT_ID]/internshield
 
 # 2. Deploy to Cloud Run
-gcloud run deploy internshield --image gcr.io/internshield-493206/internshield --region us-central1 --allow-unauthenticated
+gcloud run deploy internshield --image gcr.io/[PROJECT_ID]/internshield --region us-central1 --allow-unauthenticated
 ```
 
 ---
