@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternShield | Neural-Shield Ops</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00dbe7",
+                        "secondary": "#dfb7ff",
+                        "background": "#05070a",
+                        "surface": "#111417",
+                        "surface-container": "#1d2023",
+                        "on-surface": "#e1e2e7",
+                        "on-surface-variant": "#b9cacb",
+                        "error": "#ffb4ab",
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-module {
+            background: rgba(29, 32, 35, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(58, 73, 75, 0.15);
+        }
+        .luminous-cyan { border-top: 2px solid #00dbe7; }
+        .luminous-purple { border-top: 2px solid #dfb7ff; }
+        .holographic-gradient {
+            background: linear-gradient(45deg, #00dbe7, #00f2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body {
+            background-color: #05070a;
+            color: #e1e2e7;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+        }
+        /* Grid Overlay */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(0, 219, 231, 0.05) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 selection:text-primary">
+    <div class="grid-bg"></div>
+
+    <!-- TopAppBar -->
+    <header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-[#111417]/80 backdrop-blur-xl border-b border-[#00dbe7]/15 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-[#00dbe7]">security</span>
+            <a href="{% url 'index' %}" class="text-xl font-bold tracking-[0.2em] text-[#00dbe7] drop-shadow-[0_0_8px_rgba(0,219,231,0.5)] font-headline uppercase decoration-none hover:opacity-80 transition-opacity">INTERNSHIELD</a>
+        </div>
+        <div class="flex items-center gap-6">
+            <nav class="hidden md:flex gap-8">
+                <a class="text-[#00dbe7] font-headline text-sm tracking-widest hover:bg-[#00dbe7]/10 transition-colors px-3 py-1" href="{% url 'index' %}">DASHBOARD</a>
+                <a class="text-[#00dbe7]/50 font-headline text-sm tracking-widest hover:bg-[#00dbe7]/10 transition-colors px-3 py-1" href="{% url 'scan_gmail' %}">GMAIL</a>
+                <a class="text-[#00dbe7]/50 font-headline text-sm tracking-widest hover:bg-[#00dbe7]/10 transition-colors px-3 py-1" href="{% url 'analyze_offer' %}">OFFERS</a>
+                <a class="text-[#00dbe7]/50 font-headline text-sm tracking-widest hover:bg-[#00dbe7]/10 transition-colors px-3 py-1" href="{% url 'paste_email' %}">PASTE</a>
+                <a class="text-[#00dbe7]/50 font-headline text-sm tracking-widest hover:bg-[#00dbe7]/10 transition-colors px-3 py-1" href="{% url 'check_domain' %}">OSINT</a>
+            </nav>
+            <div class="w-8 h-8 bg-surface-container border border-primary/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-xs text-[#00dbe7]">person</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-24 pb-20 px-6 max-w-[1600px] mx-auto min-h-screen">
+        {% block content %}{% endblock %}
+
+        <!-- Legal Advisory Section -->
+        <footer class="mt-20 pt-10 border-t border-white/5 space-y-4 opacity-40 hover:opacity-100 transition-opacity duration-500 pb-10">
+            <div class="flex items-center gap-2 text-primary">
+                <span class="material-symbols-outlined text-sm">gavel</span>
+                <span class="font-headline text-[10px] font-bold tracking-[0.2em] uppercase">Legal_Advisory & Data_Integrity</span>
+            </div>
+            <p class="font-mono text-[9px] leading-relaxed max-w-4xl uppercase tracking-tighter">
+                [SYSTEM_DISCLOSURE]: The intelligence dossier provided is retrieved via real-time web-scraping and multi-point OSINT streams. InternShield operates as a heuristic diagnostic tool and does not provide legal guarantees of entity authenticity. We are not responsible for any actions taken based on this analysis. Users are mandated to perform independent verification of all employment offers and financial requests; do not rely fully on system signatures. InternShield accepts no liability for post-analysis developments, including but not limited to fraudulent payment solicitations from entities previously classified as legitimate. Your discretion is the final defensive layer.
+            </p>
+        </footer>
+    </main>
+
+    <!-- BottomNavBar (Visible on Mobile) -->
+    <nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 bg-[#111417]/90 backdrop-blur-md border-t border-[#00dbe7]/20">
+        <a class="flex flex-col items-center justify-center text-[#00dbe7] pt-2 pb-4 scale-110" href="{% url 'index' %}">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-headline text-[10px] font-bold tracking-widest mt-1">OPS</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-white/40 pt-2 pb-4 hover:text-primary transition-all" href="{% url 'scan_gmail' %}">
+            <span class="material-symbols-outlined">mail</span>
+            <span class="font-headline text-[10px] font-bold tracking-widest mt-1">MAIL</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-white/40 pt-2 pb-4 hover:text-primary transition-all" href="{% url 'check_domain' %}">
+            <span class="material-symbols-outlined">radar</span>
+            <span class="font-headline text-[10px] font-bold tracking-widest mt-1">OSINT</span>
+        </a>
+    </nav>
+</body>
+</html>
+

@@ -1,0 +1,156 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10 animate-in fade-in slide-in-from-left duration-700">
+    <div class="space-y-1">
+        <span class="font-headline text-[10px] tracking-[0.2em] text-primary/60 uppercase">Mission Intelligence Feed</span>
+        <h2 class="font-headline text-3xl font-bold text-primary italic uppercase tracking-tighter">
+            ANALYSIS_REPORTS_V4
+        </h2>
+        <p class="font-mono text-[10px] text-on-surface-variant uppercase">
+            // TOTAL_SCANNED: {{ results|length }} // SESSION: SECURE 
+            // THREAT_LEVEL: {% if results %}DETECTED{% else %}NOMINAL{% endif %}
+        </p>
+    </div>
+    <a href="{% url 'index' %}" class="px-6 py-2 bg-primary/10 border border-primary/30 text-primary font-headline text-xs tracking-widest hover:bg-primary/20 transition-all uppercase decoration-none">
+        RETURN_TO_BASE
+    </a>
+</div>
+
+{% if results %}
+    <!-- Global Stats Row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 animate-in fade-in slide-in-from-bottom duration-1000">
+        <div class="glass-module p-6 border-b-2 border-b-error flex flex-col items-center justify-center text-center">
+            <span class="font-headline text-[10px] tracking-widest text-error/60 uppercase mb-2">🚩 Critical_Threats</span>
+            <h1 class="font-headline text-5xl font-black text-error drop-shadow-[0_0_15px_rgba(255,180,171,0.5)]">{{ results|length }}</h1>
+        </div>
+        <div class="glass-module p-6 border-b-2 border-b-primary flex flex-col items-center justify-center text-center">
+            <span class="font-headline text-[10px] tracking-widest text-primary/60 uppercase mb-2">📡 Packets_Parsed</span>
+            <h1 class="font-headline text-5xl font-black text-primary drop-shadow-[0_0_15px_rgba(0,219,231,0.5)]">{{ results|length }}</h1>
+        </div>
+        <div class="glass-module p-6 border-b-2 border-b-green-500 flex flex-col items-center justify-center text-center">
+            <span class="font-headline text-[10px] tracking-widest text-green-500/60 uppercase mb-2">🟢 Engine_Status</span>
+            <h1 class="font-headline text-2xl font-black text-green-500 uppercase mt-2">Nominal</h1>
+        </div>
+    </div>
+
+    <div class="space-y-12">
+    {% for res in results %}
+        <div class="glass-module p-8 relative overflow-hidden animate-in fade-in slide-in-from-bottom duration-700 hover:border-primary/40 transition-colors" style="border-left: 4px solid {% if res.risk_score >= 70 %}#ffb4ab{% elif res.risk_score >= 40 %}#f59e0b{% else %}#10b981{% endif %};">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+            
+            <!-- Analysis Card Header -->
+            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 mb-8">
+                <div class="flex-1 space-y-4">
+                    <h3 class="font-headline text-2xl font-bold text-white tracking-tight leading-tight">{{ res.subject }}</h3>
+                    <div class="flex flex-wrap gap-6 font-mono text-[11px]">
+                        <div class="flex items-center gap-2">
+                            <span class="text-primary/40 uppercase">Source:</span>
+                            <span class="text-secondary font-bold">{{ res.sender }}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-primary/40 uppercase">Timestamp:</span>
+                            <span class="text-on-surface-variant italic">{{ res.date }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col items-end gap-2">
+                    <div class="px-6 py-4 bg-black/40 border-2 {% if res.risk_score >= 70 %}border-error/50 text-error{% elif res.risk_score >= 40 %}border-yellow-500/50 text-yellow-500{% else %}border-green-500/50 text-green-500{% endif %} font-headline text-3xl font-black italic tracking-tighter">
+                        {{ res.risk_score }}% <span class="text-xs non-italic block tracking-widest opacity-60 uppercase font-bold">Risk_Index</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Data Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Verdict Section -->
+                <div class="bg-surface-container/30 border border-white/5 p-6 space-y-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm text-primary">gavel</span>
+                        <h4 class="font-headline text-[10px] font-bold text-primary uppercase tracking-widest">System_Verdict_Engine</h4>
+                    </div>
+                    <p class="font-headline text-xl font-black uppercase tracking-tight {% if res.risk_score >= 70 %}text-error{% elif res.risk_score >= 40 %}text-yellow-500{% else %}text-green-500{% endif %}">
+                        {{ res.verdict }}
+                    </p>
+                    <div class="w-full h-px bg-white/5"></div>
+                    <p class="text-xs text-on-surface-variant font-body leading-relaxed">
+                        Linguistic patterns and metadata headers suggest {% if res.risk_score > 50 %}high anomalous activity signatures.{% else %}standard non-predatory communication markers.{% endif %}
+                    </p>
+                </div>
+
+                <!-- Reputation/IPQS Section -->
+                {% if res.sender_analysis.reputation.checked %}
+                <div class="bg-black/20 border border-secondary/20 p-6 space-y-4 relative overflow-hidden">
+                    <!-- Scan Sweep Effect -->
+                    <div class="absolute top-0 left-0 w-full h-[1px] bg-secondary/30 animate-[scan_3s_infinite] shadow-[0_0_10px_#dfb7ff]"></div>
+                    
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm text-secondary">psychology</span>
+                        <h4 class="font-headline text-[10px] font-bold text-secondary uppercase tracking-widest">Reputation_Logic_Probe</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6 pt-2 font-mono text-[11px]">
+                        <div class="space-y-4">
+                            <div>
+                                <div class="text-primary/40 uppercase text-[9px]">Disposable_Target</div>
+                                <div class="text-white font-bold {% if res.sender_analysis.reputation.disposable %}text-error{% else %}text-green-500{% endif %}">
+                                    {% if res.sender_analysis.reputation.disposable %}POSITIVE{% else %}NEGATIVE{% endif %}
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-primary/40 uppercase text-[9px]">SMTP_Validation</div>
+                                <div class="text-white font-bold {% if res.sender_analysis.reputation.valid %}text-green-500{% else %}text-error{% endif %}">
+                                    {% if res.sender_analysis.reputation.valid %}VERIFIED{% else %}FAKE_SERVER{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center justify-center p-4 bg-secondary/5 border border-secondary/10">
+                            <div class="text-[9px] text-secondary/60 uppercase mb-1">Fraud_Score</div>
+                            <div class="text-2xl font-black text-white italic">{{ res.sender_analysis.reputation.fraud_score|default:"--" }}<span class="text-xs opacity-40">/100</span></div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Risk Signals / Trace Logs -->
+            {% if res.signals %}
+            <div class="mt-8 space-y-4">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm text-error">warning</span>
+                    <h4 class="font-headline text-[10px] font-bold text-error uppercase tracking-widest">Heuristic_Trace_Flags</h4>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {% for signal in res.signals %}
+                    <div class="bg-error/5 border-l-2 border-l-error p-3 flex items-center gap-3">
+                        <span class="font-mono text-[10px] text-error">>></span>
+                        <span class="font-headline text-[11px] text-white uppercase font-bold">{{ signal }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <div class="glass-module p-20 flex flex-col items-center justify-center text-center gap-6 animate-in zoom-in duration-500 border-dashed">
+        <span class="material-symbols-outlined text-primary text-6xl animate-pulse">shield_check</span>
+        <div class="space-y-2">
+            <h3 class="font-headline text-2xl font-bold text-primary italic uppercase tracking-widest">// SCAN_CLEAN //</h3>
+            <p class="text-on-surface-variant font-body">No anomalous packets detected in the current mission buffer.</p>
+        </div>
+        <a href="{% url 'index' %}" class="px-8 py-3 bg-primary text-background font-headline font-bold text-sm tracking-[0.2em] hover:brightness-110 active:scale-95 transition-all uppercase decoration-none">
+            RETRY_QUERY_SCAN
+        </a>
+    </div>
+{% endif %}
+
+<style>
+    @keyframes scan {
+        0% { top: 0; }
+        100% { top: 100%; }
+    }
+</style>
+{% endblock %}

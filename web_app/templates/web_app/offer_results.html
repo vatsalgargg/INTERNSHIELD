@@ -1,0 +1,198 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+{% if result.error %}
+<div class="max-w-2xl mx-auto py-12 animate-in fade-in zoom-in duration-700">
+    <div class="glass-module p-10 border-l-4 border-l-error bg-error/5 flex flex-col items-center text-center gap-6">
+        <span class="material-symbols-outlined text-error text-6xl animate-pulse">error</span>
+        <div class="space-y-2">
+            <h2 class="font-headline text-2xl font-bold text-error uppercase tracking-tighter italic">AUDIT_FAILURE_DETECTED</h2>
+            <p class="text-on-surface-variant font-body">{{ result.error }}</p>
+        </div>
+        <div class="w-full h-px bg-white/5 my-4"></div>
+        <a href="{% url 'analyze_offer' %}" class="px-8 py-3 bg-error text-background font-headline font-bold text-sm tracking-[0.2em] hover:brightness-110 active:scale-95 transition-all uppercase decoration-none">
+            RE_INITIALIZE_SCAN
+        </a>
+    </div>
+</div>
+{% else %}
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8 animate-in fade-in slide-in-from-left duration-700">
+    <div class="space-y-1">
+        <span class="font-headline text-[10px] tracking-[0.2em] text-primary/60 uppercase">Forensic Audit Sequence</span>
+        <h2 class="font-headline text-3xl font-bold text-primary italic uppercase tracking-tighter">
+            FILE_FORENSICS: {{ result.filename|truncatechars:30 }}
+        </h2>
+        <p class="font-mono text-[10px] text-on-surface-variant uppercase">
+            // STATUS: <span class="{% if result.final_score|default:0 > 60 %}text-error{% elif result.final_score|default:0 > 30 %}text-yellow-500{% else %}text-green-500{% endif %} font-bold">{{ result.verdict|upper }}</span> 
+            // ENGINE: InternShield_v4.2 // CLASSIFIED
+        </p>
+    </div>
+    <a href="{% url 'analyze_offer' %}" class="px-6 py-2 bg-primary/10 border border-primary/30 text-primary font-headline text-xs tracking-widest hover:bg-primary/20 transition-all uppercase decoration-none">
+        INITIATE_NEW_AUDIT
+    </a>
+</div>
+
+<main class="space-y-6">
+    <!-- Top Section: Visual Analytics -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Threat Vector Visualization -->
+        <section class="lg:col-span-8 glass-module luminous-cyan p-6 min-h-[400px] flex flex-col justify-between">
+            <div class="flex justify-between items-start mb-6">
+                <div class="space-y-1">
+                    <span class="font-headline text-[10px] tracking-[0.2em] text-primary/60 uppercase">Heuristic Analysis</span>
+                    <h2 class="font-headline text-xl font-bold text-primary italic uppercase">THREAT_VECTOR_VISUALIZATION</h2>
+                </div>
+                <div class="bg-error/10 border border-error/30 px-3 py-1">
+                    <span class="font-headline text-[10px] font-bold text-error uppercase">RISK_DETECTION: {{ result.final_score|default:0 }}%</span>
+                </div>
+            </div>
+            
+            <div class="relative flex-1 flex items-center justify-center">
+                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, #00dbe7 1px, transparent 1px); background-size: 30px 30px;"></div>
+                <div class="relative w-64 h-64">
+                    <!-- Radar Rings -->
+                    <div class="absolute inset-0 border border-primary/10 rounded-full animate-pulse"></div>
+                    <div class="absolute inset-[25%] border border-primary/10 rounded-full"></div>
+                    <div class="absolute inset-[50%] border border-primary/10 rounded-full"></div>
+                    
+                    <!-- Vector Shape -->
+                    <svg class="absolute inset-0 w-full h-full drop-shadow-[0_0_15px_rgba(0,219,231,0.4)]" viewbox="0 0 100 100">
+                        <polygon fill="rgba(0, 219, 231, 0.2)" points="50,15 85,50 {% if result.final_score|default:0 > 50 %}90,90{% else %}50,85{% endif %} 15,35" stroke="#00dbe7" stroke-width="1.5"></polygon>
+                        <!-- Secondary pulse shape -->
+                        <polygon fill="rgba(223, 183, 255, 0.1)" points="50,25 75,50 50,75 25,45" stroke="#dfb7ff" stroke-width="1" class="animate-pulse"></polygon>
+                    </svg>
+                    
+                    <!-- Labels -->
+                    <span class="absolute -top-6 left-1/2 -translate-x-1/2 font-headline text-[10px] tracking-widest text-primary uppercase">Linguistic</span>
+                    <span class="absolute top-1/2 -right-12 -translate-y-1/2 font-headline text-[10px] tracking-widest text-primary uppercase">Domain</span>
+                    <span class="absolute -bottom-6 left-1/2 -translate-x-1/2 font-headline text-[10px] tracking-widest text-primary uppercase">Financial</span>
+                    <span class="absolute top-1/2 -left-16 -translate-y-1/2 font-headline text-[10px] tracking-widest text-primary uppercase">Structure</span>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-black/20 font-mono text-[10px] text-on-surface-variant flex gap-4">
+                <span class="text-secondary font-bold">SHA-256: 8e72c8...f9a2e</span>
+                <span class="text-primary/60">PACKET_ID: #{{ result.company_name|slice:":4"|default:"9091"|upper }}</span>
+            </div>
+        </section>
+
+        <!-- Linguistic Confidence Gauge -->
+        <section class="lg:col-span-4 glass-module luminous-purple p-8 flex flex-col items-center justify-center text-center gap-6">
+            <div class="w-full text-left space-y-1">
+                <span class="font-headline text-[10px] tracking-[0.2em] text-secondary/60 uppercase">ML Audit Module</span>
+                <h2 class="font-headline text-lg font-bold text-secondary italic uppercase tracking-tight">AI_SYNTHESIS_PROBABILITY</h2>
+            </div>
+            
+            <div class="relative w-48 h-48 flex items-center justify-center">
+                <svg class="w-full h-full -rotate-90">
+                    <circle class="text-surface-container" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="4"></circle>
+                    <circle class="text-secondary drop-shadow-[0_0_8px_rgba(223,183,255,0.6)]" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502.6" stroke-dashoffset="{{ result.dashoffset|default:502.6|floatformat:0 }}" stroke-width="8"></circle>
+                </svg>
+                <div class="absolute flex flex-col items-center">
+                    <span class="font-headline text-5xl font-extrabold text-white tracking-tighter">{{ result.final_score|default:0 }}%</span>
+                    <span class="font-headline text-[10px] tracking-widest text-secondary uppercase">Pattern Confidence</span>
+                </div>
+            </div>
+            <p class="font-body text-[11px] text-on-surface-variant leading-relaxed">
+                Statistical syntax mapping identifies high overlap with template-based automation.
+            </p>
+            <div class="w-full h-px bg-white/5 my-2"></div>
+            <div class="grid grid-cols-2 w-full gap-4">
+                <div class="text-left">
+                    <div class="text-[9px] uppercase opacity-40 font-mono">Company Entity</div>
+                    <div class="text-xs font-bold text-white uppercase">{{ result.company_name|default:"Unknown" }}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-[9px] uppercase opacity-40 font-mono">Assigned Role</div>
+                    <div class="text-xs font-bold text-white uppercase">{{ result.role|default:"Intern" }}</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Section: Monospace Metadata & Checklist -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-12">
+        <!-- Digital Fingerprint (Terminal Window) -->
+        <section class="glass-module overflow-hidden flex flex-col">
+            <div class="bg-surface-container px-4 py-2 border-b border-white/5 flex items-center justify-between">
+                <div class="flex gap-2">
+                    <span class="w-2 h-2 rounded-full bg-error/40"></span>
+                    <span class="w-2 h-2 rounded-full bg-yellow-500/40"></span>
+                    <span class="w-2 h-2 rounded-full bg-primary/40"></span>
+                </div>
+                <span class="font-mono text-[9px] tracking-widest text-on-surface-variant uppercase">METADATA_EXTRACTOR_STREAMS</span>
+            </div>
+            <div class="bg-black/40 p-6 flex-1 font-mono text-[11px] space-y-3">
+                <div class="flex items-start gap-4">
+                    <span class="text-primary/40">001</span>
+                    <span class="text-primary uppercase">PDF_PRODUCER:</span>
+                    <span class="text-on-surface">{{ result.metadata.producer|default:"Skia/PDF (Emulated)" }}</span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-primary/40">002</span>
+                    <span class="text-primary uppercase">AUTHOR_SIG:</span>
+                    <span class="text-on-surface">{{ result.metadata.author|default:"Admin-Generator" }}</span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-primary/40">003</span>
+                    <span class="text-primary uppercase">INFRA_VERDICT:</span>
+                    <span class="{% if result.final_score|default:0 > 50 %}text-error animate-pulse{% else %}text-green-500{% endif %}">
+                        {% if result.final_score|default:0 > 50 %}ANOMALOUS_INFRA_DETECTED{% else %}INTEGRITY_VERIFIED{% endif %}
+                    </span>
+                </div>
+                <div class="flex items-start gap-4">
+                    <span class="text-primary/40">004</span>
+                    <span class="text-primary uppercase">SALARY_EXTRACT:</span>
+                    <span class="text-green-400 font-bold">{{ result.salary|default:"N/A" }}</span>
+                </div>
+                <div class="mt-6 border-t border-white/5 pt-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary text-sm">fingerprint</span>
+                    <span class="text-secondary/60 text-[10px] tracking-tighter">DATA_INTEGRITY_SCAN_COMPLETED_SUCCESSFULLY</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Actionable Safety Checklist -->
+        <section class="glass-module p-6 flex flex-col gap-6">
+            <div>
+                <span class="font-headline text-[10px] tracking-[0.2em] text-primary/60 uppercase">Heuristic Findings</span>
+                <h2 class="font-headline text-xl font-bold text-primary italic uppercase tracking-tighter">SAFETY_LOGS</h2>
+            </div>
+            <div class="space-y-3 flex-1 overflow-y-auto max-h-[250px] pr-2 custom-scrollbar">
+                {% if result.risk_signals %}
+                    {% for signal in result.risk_signals %}
+                    <div class="border border-white/5 p-4 flex items-center gap-4 bg-surface-container/50 border-l-2 border-l-error animate-in fade-in slide-in-from-right duration-500">
+                        <div class="relative">
+                            <span class="material-symbols-outlined text-error">gpp_maybe</span>
+                            <div class="absolute inset-0 bg-error/20 rounded-full blur-md animate-pulse"></div>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-headline text-xs text-white uppercase font-bold">{{ signal }}</p>
+                            <span class="text-[9px] font-mono text-error/60 uppercase">Flagged by: Linguistic_Engine</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="border border-green-500/10 p-6 flex flex-col items-center justify-center gap-4 bg-green-500/5 text-center">
+                        <span class="material-symbols-outlined text-green-500 text-4xl">check_circle</span>
+                        <div>
+                            <p class="font-headline text-sm text-green-500 font-bold uppercase tracking-widest">NO_THREATS_DETECTED</p>
+                            <p class="text-[10px] text-on-surface-variant font-body mt-1">Document follows standard corporate phrasing and lacks common predatory indicators.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <button class="w-full py-4 bg-primary text-background font-headline font-bold tracking-widest text-xs hover:brightness-110 active:scale-95 transition-all uppercase">
+                GENERATE_FORENSIC_SUMMARY
+            </button>
+        </section>
+    </div>
+</main>
+{% endif %}
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 219, 231, 0.2); }
+</style>
+{% endblock %}

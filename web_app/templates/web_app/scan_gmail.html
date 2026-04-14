@@ -1,0 +1,41 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
+    <div class="glass-module luminous-cyan p-10 relative overflow-hidden">
+        <!-- Background Decoration -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle, #00dbe7 1px, transparent 1px); background-size: 24px 24px;"></div>
+        
+        <div class="relative z-10 flex flex-col items-center text-center">
+            <span class="material-symbols-outlined text-primary text-5xl mb-6 drop-shadow-[0_0_10px_rgba(0,219,231,0.5)]">hub</span>
+            <div class="space-y-1 mb-10">
+                <span class="font-headline text-[10px] tracking-[0.3em] text-primary/60 uppercase">Protocol: OAUTH_SECURE_EXTRACTOR</span>
+                <h2 class="font-headline text-3xl font-bold text-primary italic uppercase tracking-tighter">GMAIL_INBOX_GATEWAY</h2>
+            </div>
+
+            <div class="w-full space-y-8 py-10">
+                <div class="flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-primary/40 text-7xl animate-pulse">lock_clock</span>
+                </div>
+                
+                <div class="p-6 bg-primary/5 border border-primary/20 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-2 h-2 bg-primary rounded-full animate-ping"></span>
+                        <p class="font-headline text-xs font-bold text-primary tracking-widest uppercase">SYST_STATUS: MAINTENANCE_IN_PROGRESS</p>
+                    </div>
+                    <p class="text-sm text-on-surface-variant font-body leading-relaxed text-left">
+                        The <span class="text-primary italic">Gmail Protocol 2.0</span> is undergoing a security architectural overhaul to align with Neural-Shield v5 specifications. Direct inbox extraction is temporarily suspended to protect user encryption keys.
+                    </p>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+                    <p class="font-headline text-[10px] tracking-[0.5em] text-primary/60 font-black">NEURAL_SHIELD V5 : COMING_SOON</p>
+                </div>
+
+                <a href="{% url 'index' %}" class="block px-8 py-4 border border-primary text-primary font-headline font-bold text-[10px] tracking-[0.3em] hover:bg-primary hover:text-background transition-all uppercase decoration-none w-full">
+                    RETURN_TO_OPS_DASHBOARD
+                </a>
+            </div>
+{% endblock %}
+

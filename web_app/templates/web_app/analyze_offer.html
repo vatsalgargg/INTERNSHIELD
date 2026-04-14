@@ -1,0 +1,73 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
+    <div class="glass-module luminous-purple p-10 relative overflow-hidden">
+        <!-- Background Decoration -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle, #dfb7ff 1px, transparent 1px); background-size: 24px 24px;"></div>
+        
+        <div class="relative z-10 flex flex-col items-center text-center">
+            <span class="material-symbols-outlined text-secondary text-5xl mb-6 drop-shadow-[0_0_10px_rgba(223,183,255,0.5)]">biotech</span>
+            <div class="space-y-1 mb-10">
+                <span class="font-headline text-[10px] tracking-[0.3em] text-secondary/60 uppercase">System: DOCUMENT_STRUCTURE_AUDIT</span>
+                <h2 class="font-headline text-3xl font-bold text-secondary italic uppercase tracking-tighter">FORENSIC_ANALYSIS_LAB</h2>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" id="uploadForm" class="w-full space-y-8">
+                {% csrf_token %}
+                <div class="group relative">
+                    <label for="offer_letter" class="block cursor-pointer transition-all">
+                        <div class="border-2 border-dashed border-secondary/30 bg-black/40 p-12 flex flex-col items-center gap-4 group-hover:bg-secondary/5 group-hover:border-secondary transition-all">
+                            <span class="material-symbols-outlined text-secondary text-6xl group-hover:scale-110 transition-transform duration-500">upload_file</span>
+                            <div class="space-y-1">
+                                <p class="font-headline text-sm font-black text-secondary uppercase tracking-[0.2em]">UPLOAD_OFFER_PACKET</p>
+                                <p class="text-[10px] font-mono text-on-surface-variant uppercase opacity-60">[ PDF_OR_DOCX_ONLY ]</p>
+                            </div>
+                        </div>
+                    </label>
+                    <input type="file" id="offer_letter" name="offer_letter" accept=".pdf,.docx" class="hidden" required 
+                           onchange="document.getElementById('fileName').textContent = '// FILE_LOADED: ' + this.files[0].name.toUpperCase();">
+                    <div id="fileName" class="mt-4 font-mono text-[10px] text-green-500 tracking-widest uppercase"></div>
+                </div>
+                
+                <button type="submit" id="submitBtn" class="w-full py-6 bg-secondary text-background font-headline font-black text-sm tracking-[0.4em] hover:brightness-110 active:scale-[0.98] transition-all uppercase">
+                    EXECUTE_AI_AUDIT_SEQUENCE
+                </button>
+            </form>
+
+            <!-- Loading State -->
+            <div id="loading" class="hidden w-full space-y-10 py-10 animate-in fade-in duration-500">
+                <div class="relative flex items-center justify-center">
+                    <div class="absolute inset-0 bg-secondary/10 rounded-full blur-3xl animate-pulse"></div>
+                    <span class="material-symbols-outlined text-secondary text-6xl animate-spin" style="animation-duration: 2s;">settings</span>
+                </div>
+                <div class="space-y-4">
+                    <p class="font-headline text-xs font-bold text-secondary tracking-widest uppercase animate-pulse">
+                        PARSING_DOCUMENT_VECTORS... RUNNING_GRAMMAR_SCRIPTS...
+                    </p>
+                    <div class="w-full bg-black/40 h-1 overflow-hidden">
+                        <div class="bg-secondary h-full w-1/3 animate-[loading_1.5s_infinite_ease-in-out]"></div>
+                    </div>
+                    <p class="text-[10px] font-mono text-on-surface-variant uppercase opacity-40">DEEP_AUDIT_IN_PROGRESS_</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes loading {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(300%); }
+    }
+</style>
+
+<script>
+    document.getElementById('uploadForm')?.addEventListener('submit', function() {
+        document.getElementById('submitBtn').classList.add('hidden');
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('uploadForm').classList.add('hidden');
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,108 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 pb-20">
+    <div class="glass-module luminous-cyan p-10 relative overflow-hidden">
+        <!-- Background Decoration -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle, #00dbe7 1px, transparent 1px); background-size: 24px 24px;"></div>
+        
+        <div class="relative z-10 flex flex-col items-center">
+            <span class="material-symbols-outlined text-primary text-5xl mb-6 drop-shadow-[0_0_10px_rgba(0,219,231,0.5)]">database</span>
+            <div class="space-y-1 mb-10 text-center">
+                <span class="font-headline text-[10px] tracking-[0.3em] text-primary/60 uppercase">Protocol: NLP_PATTERN_EXTRACTION</span>
+                <h2 class="font-headline text-3xl font-bold text-primary italic uppercase tracking-tighter">RAW_PACKET_INJECTOR</h2>
+            </div>
+
+            <form method="POST" id="pasteForm" class="w-full space-y-10">
+                {% csrf_token %}
+                
+                <!-- Main Payload Area -->
+                <div class="space-y-4">
+                    <label class="font-headline text-[10px] tracking-widest text-primary/60 uppercase ml-1 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+                        [01] PACKET_PAYLOAD (PASTE_TEXT)
+                    </label>
+                    <textarea id="raw_email" name="raw_email" rows="12" 
+                              class="w-full bg-black/60 border border-white/10 p-6 text-white font-mono text-sm focus:border-primary/50 focus:outline-none transition-all placeholder:text-surface-variant/20 custom-scrollbar"
+                              placeholder="From: hr@corporate-entity.com&#10;Subject: Job Offer Verification&#10;&#10;Paste headers + body for deep forensic scan..." required></textarea>
+                </div>
+
+                <!-- Context Probe Area -->
+                <div class="bg-surface-container/30 border border-white/10 p-8 space-y-6">
+                    <div class="space-y-1">
+                        <label class="font-headline text-xs font-bold text-secondary uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">help</span>
+                            CONTEXT_PROBE: SOLICITATION_STATUS
+                        </label>
+                        <p class="text-[10px] font-mono text-on-surface-variant uppercase opacity-40 italic">Check the origin vector of this communication</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <label class="relative group cursor-pointer">
+                            <input type="radio" name="did_apply" value="yes" class="peer hidden">
+                            <div class="p-4 border border-white/10 bg-black/40 text-center peer-checked:bg-primary/20 peer-checked:border-primary transition-all hover:bg-white/5">
+                                <span class="font-headline text-[10px] font-bold text-white uppercase tracking-widest">SOLICITED</span>
+                                <p class="text-[9px] font-mono text-on-surface-variant mt-1 group-hover:text-white/60">I APPLIED</p>
+                            </div>
+                        </label>
+                        <label class="relative group cursor-pointer">
+                            <input type="radio" name="did_apply" value="no" class="peer hidden">
+                            <div class="p-4 border border-white/10 bg-black/40 text-center peer-checked:bg-error/20 peer-checked:border-error transition-all hover:bg-white/5">
+                                <span class="font-headline text-[10px] font-bold text-white uppercase tracking-widest">UNSOLICITED</span>
+                                <p class="text-[9px] font-mono text-on-surface-variant mt-1 group-hover:text-white/60">COLD CONTACT</p>
+                            </div>
+                        </label>
+                        <label class="relative group cursor-pointer">
+                            <input type="radio" name="did_apply" value="unknown" checked class="peer hidden">
+                            <div class="p-4 border border-white/10 bg-black/40 text-center peer-checked:bg-secondary/20 peer-checked:border-secondary transition-all hover:bg-white/5">
+                                <span class="font-headline text-[10px] font-bold text-white uppercase tracking-widest">UNCERTAIN</span>
+                                <p class="text-[9px] font-mono text-on-surface-variant mt-1 group-hover:text-white/60">UNKNOWN STATUS</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" id="submitBtn" class="w-full py-6 bg-primary text-background font-headline font-black text-sm tracking-[0.4em] hover:brightness-110 active:scale-[0.98] transition-all uppercase">
+                    EXECUTE_FORENSIC_NLP_AUDIT
+                </button>
+            </form>
+
+            <!-- Loading State -->
+            <div id="loading" class="hidden w-full space-y-10 py-10 animate-in fade-in duration-500">
+                <div class="relative flex items-center justify-center">
+                    <div class="absolute inset-0 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+                    <span class="material-symbols-outlined text-primary text-6xl animate-pulse">neurology</span>
+                </div>
+                <div class="space-y-4">
+                    <p class="font-headline text-xs font-bold text-primary tracking-widest uppercase animate-pulse">
+                        RUNNING_PATTERN_MATCHER... DISSECTING_COMM_HEADERS...
+                    </p>
+                    <div class="w-full bg-black/40 h-1 overflow-hidden">
+                        <div class="bg-primary h-full w-1/3 animate-[loading_1.5s_infinite_ease-in-out]"></div>
+                    </div>
+                    <p class="text-[10px] font-mono text-on-surface-variant uppercase opacity-40 text-center">TRAINING_VECTORS_LOADED_</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes loading {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(300%); }
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 219, 231, 0.2); }
+</style>
+
+<script>
+    document.getElementById('pasteForm')?.addEventListener('submit', function() {
+        document.getElementById('submitBtn').classList.add('hidden');
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('pasteForm').classList.add('hidden');
+    });
+</script>
+{% endblock %}
+

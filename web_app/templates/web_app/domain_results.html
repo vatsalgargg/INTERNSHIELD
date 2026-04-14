@@ -1,0 +1,187 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10 animate-in fade-in slide-in-from-left duration-700">
+    <div class="space-y-1">
+        <span class="font-headline text-[10px] tracking-[0.2em] text-primary/60 uppercase">Dossier Retrieval Sequence</span>
+        <h2 class="font-headline text-3xl font-bold text-primary italic uppercase tracking-tighter">
+            OSINT_DOSSIER: {{ company_name|default:"UNIDENTIFIED_TARGET"|upper }}
+        </h2>
+        <p class="font-mono text-[10px] text-on-surface-variant uppercase">
+            // TARGET: <span class="text-secondary font-bold">{{ domain|default:"UNSPECIFIED" }}</span> 
+            // INTEL_LEVEL: 0 // CLASSIFIED
+        </p>
+    </div>
+    <div class="flex gap-4">
+        <a href="{% url 'check_domain' %}" class="px-6 py-2 bg-primary/10 border border-primary/30 text-primary font-headline text-xs tracking-widest hover:bg-primary/20 transition-all uppercase decoration-none">
+            RE_SCAN
+        </a>
+    </div>
+</div>
+
+<main class="space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- 01: Domain Network Intel -->
+        {% if domain_result %}
+        <section class="lg:col-span-6 glass-module luminous-purple p-8 flex flex-col gap-8">
+            <div class="flex justify-between items-start">
+                <div class="space-y-1">
+                    <span class="font-headline text-[10px] tracking-[0.2em] text-secondary/60 uppercase">Protocol: WHOIS_SCRAPE</span>
+                    <h2 class="font-headline text-xl font-bold text-secondary italic uppercase tracking-tighter">[01] DOMAIN_NETWORK_INTEL</h2>
+                </div>
+                <div class="text-right">
+                    <div class="text-3xl font-headline font-black text-white italic tracking-tighter">{{ domain_result.domain_score }}%</div>
+                    <div class="text-[9px] font-mono text-secondary uppercase tracking-widest opacity-60">Risk_Index</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-black/40 border border-white/5 p-4 flex justify-between items-center">
+                    <span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">Registration_Age</span>
+                    <span class="px-3 py-1 font-mono text-sm font-bold {% if domain_result.is_young %}text-error animate-pulse{% else %}text-green-500{% endif %}">
+                        {{ domain_result.age_days|default:"UNKNOWN" }} DAYS
+                    </span>
+                </div>
+                <div class="bg-black/40 border border-white/5 p-4 flex justify-between items-center">
+                    <span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">TLD_Reputation</span>
+                    <span class="font-mono text-sm font-bold {% if domain_result.suspicious_tld %}text-error{% else %}text-green-500{% endif %} uppercase">
+                        {% if domain_result.suspicious_tld %}SUSPICIOUS{% else %}PREMIUM{% endif %}
+                    </span>
+                </div>
+                <div class="bg-black/40 border border-white/5 p-4 flex justify-between items-center">
+                    <span class="font-mono text-[11px] text-on-surface-variant uppercase tracking-widest">MX_Propagation</span>
+                    <span class="material-symbols-outlined text-sm {% if domain_result.has_valid_mx %}text-green-500{% else %}text-error{% endif %}">
+                        {% if domain_result.has_valid_mx %}verified{% else %}error{% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <!-- SSL Profile Terminal -->
+            <div class="bg-surface-container/50 p-6 space-y-3 font-mono text-[10px]">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-xs text-secondary">lock</span>
+                    <span class="text-secondary/60 uppercase tracking-widest">SSL_Security_Profile</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="opacity-40">ISSUER:</span>
+                    <span class="text-white">{{ domain_result.ssl_info.issuer|truncatechars:30 }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="opacity-40">TRUST_LEVEL:</span>
+                    <span class="{% if "Let's Encrypt" in domain_result.ssl_info.issuer %}text-yellow-500{% else %}text-green-500{% endif %}">
+                        {% if "Let's Encrypt" in domain_result.ssl_info.issuer %}FREE_DOMAIN_VALIDATED{% else %}ORGANIZATION_VERIFIED{% endif %}
+                    </span>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- 02: Web Footprint Verification -->
+        {% if osint %}
+        <section class="lg:col-span-6 glass-module luminous-cyan p-8 flex flex-col gap-8">
+            <div class="flex justify-between items-start">
+                <div class="space-y-1">
+                    <span class="font-headline text-[10px] tracking-[0.2em] text-primary/60 uppercase">Protocol: MULTI_POINT_OSINT</span>
+                    <h2 class="font-headline text-xl font-bold text-primary italic uppercase tracking-tighter">[02] WEB_FOOTPRINT_VERIFICATION</h2>
+                </div>
+                <div class="text-right">
+                    <div class="text-3xl font-headline font-black text-white italic tracking-tighter">{{ osint.overall_web_risk }}%</div>
+                    <div class="text-[9px] font-mono text-primary uppercase tracking-widest opacity-60">Web_Risk_Vector</div>
+                </div>
+            </div>
+
+            <div class="space-y-6 flex-1">
+                <!-- MCA Panel -->
+                <div class="bg-black/40 border border-white/5 p-6 space-y-4 relative group">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-headline text-[10px] font-bold text-primary/60 uppercase tracking-widest">Indian_MCA_Registry</h4>
+                        <span class="font-mono text-[9px] text-white/20">DB_QUERY_OK</span>
+                    </div>
+                    
+                    {% if osint.mca_web_result.found %}
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-10 bg-green-500 shadow-[0_0_10px_#10b981]"></div>
+                            <div>
+                                <p class="font-headline text-sm text-green-500 font-bold uppercase">MCA: VERIFIED_LEGAL_ENTITY</p>
+                                <p class="font-mono text-[10px] text-white/60">CIN: {{ osint.mca_web_result.cin }}</p>
+                            </div>
+                        </div>
+                    {% elif osint.mca_web_result.potential_match %}
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-10 bg-yellow-500 shadow-[0_0_10px_#f59e0b]"></div>
+                            <div>
+                                <p class="font-headline text-sm text-yellow-500 font-bold uppercase">MCA: REGISTRY_MATCH_UNVERIFIED</p>
+                                <p class="font-mono text-[10px] text-white/40 leading-tight">Name exists in records but NO direct CIN verification found.</p>
+                            </div>
+                        </div>
+                    {% elif osint.is_indian_flag %}
+                        <div class="flex items-center gap-4 animate-in fade-in slide-in-from-right duration-500">
+                            <div class="w-2 h-10 bg-error shadow-[0_0_10px_#ffb4ab]"></div>
+                            <div>
+                                <p class="font-headline text-sm text-error font-bold uppercase">MCA: REGISTRATION_ABSENT</p>
+                                <p class="font-mono text-[10px] text-error/60 leading-tight">INDIAN ENTITY CLAIMED BUT NOT FOUND IN GOVT DB.</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="flex items-center gap-4 opacity-50">
+                            <div class="w-2 h-10 bg-white/20"></div>
+                            <div>
+                                <p class="font-headline text-sm text-white font-bold uppercase">MCA: GLOBAL_ENTITY_MODE</p>
+                                <p class="font-mono text-[10px] text-white/40">Non-Indian classification detected.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- LinkedIn Panel -->
+                <div class="bg-black/40 border border-white/5 p-6 flex items-center justify-between">
+                    <div class="space-y-1">
+                        <h4 class="font-headline text-[10px] font-bold text-primary/60 uppercase tracking-widest">Social_Graph_Probe</h4>
+                        <p class="font-headline text-sm font-bold text-white uppercase">
+                            {% if osint.linkedin_result.found %}LINKEDIN: ACTIVE_PROFILE{% else %}LINKEDIN: ZERO_PRESENCE{% endif %}
+                        </p>
+                    </div>
+                    {% if osint.linkedin_result.found %}
+                    <a href="{{ osint.linkedin_result.url }}" target="_blank" class="px-4 py-2 border border-primary text-primary font-mono text-[10px] hover:bg-primary hover:text-background transition-all decoration-none uppercase">
+                        VIEW_INTEL
+                    </a>
+                    {% else %}
+                    <span class="material-symbols-outlined text-error animate-pulse">visibility_off</span>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+    <!-- Trace Flags / Terminal Logs Section -->
+    {% if osint and osint.risk_signals %}
+    <section class="glass-module p-0 overflow-hidden">
+        <div class="bg-surface-container/50 px-6 py-3 border-b border-white/5 flex items-center justify-between">
+            <div class="flex gap-2">
+                <span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+                <span class="font-mono text-[10px] tracking-widest text-error/80 uppercase">⚠️ TRACE_FLAGS_ALERTS</span>
+            </div>
+            <span class="font-mono text-[9px] text-white/20">LOG_LEVEL: CRITICAL</span>
+        </div>
+        <div class="p-8 bg-black/40 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for signal in osint.risk_signals %}
+            <div class="flex items-start gap-4 p-4 bg-error/5 border-l border-l-error animate-in fade-in slide-in-from-bottom duration-500">
+                <span class="font-mono text-error/60 text-[10px] font-bold mt-1">>></span>
+                <p class="font-headline text-xs text-white/90 uppercase font-bold tracking-tight">{{ signal }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</main>
+
+<style>
+    .glass-module {
+        background: rgba(13, 17, 23, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 0;
+    }
+</style>
+{% endblock %}

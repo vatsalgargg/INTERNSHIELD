@@ -1,0 +1,111 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+    
+    <!-- Top Row: Risk Radar & Terminal -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-8 glass-module luminous-cyan p-8 relative overflow-hidden min-h-[550px] flex flex-col items-center justify-center">
+            <!-- Decorative Grid -->
+            <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle, #00dbe7 1px, transparent 1px); background-size: 32px 32px;"></div>
+            <h2 class="absolute top-8 left-8 font-headline font-bold tracking-widest text-primary text-sm flex items-center gap-2">
+                <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                ACTIVE_THREAT_RADAR
+            </h2>
+            
+            <!-- Risk Radar Visual -->
+            <div class="relative w-96 h-96 flex items-center justify-center scale-110">
+                <div class="absolute inset-0 border border-primary/20 rounded-full animate-pulse"></div>
+                <div class="absolute inset-8 border border-primary/15 rounded-full"></div>
+                <div class="absolute inset-20 border border-primary/10 rounded-full"></div>
+                
+                <!-- Radar Sweeper -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-primary/10 rounded-full animate-[spin_4s_linear_infinite]"></div>
+                
+                <div class="text-center z-10">
+                    <span class="block text-7xl font-headline font-bold text-primary mb-1 tracking-tighter">98.2</span>
+                    <span class="text-xs font-mono text-on-surface-variant tracking-[0.3em] uppercase">Security_Trust_Score</span>
+                </div>
+            </div>
+
+            <div class="mt-8 grid grid-cols-3 gap-12 w-full max-w-lg">
+                <div class="text-center">
+                    <div class="text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Scanning</div>
+                    <div class="text-primary font-mono text-xl">ONLINE</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Detections</div>
+                    <div class="text-secondary font-mono text-xl">4,812</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Uptime</div>
+                    <div class="text-primary font-mono text-xl">99.9%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Terminal Window -->
+        <div class="lg:col-span-4 glass-module bg-black/40 border-t border-primary/20 p-6 font-mono text-sm overflow-hidden flex flex-col h-full min-h-[550px]">
+            <div class="flex items-center gap-2 mb-4 border-b border-white/5 pb-2">
+                <div class="w-2.5 h-2.5 bg-error rounded-full"></div>
+                <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
+                <div class="w-2.5 h-2.5 bg-primary rounded-full"></div>
+                <span class="ml-4 text-on-surface-variant opacity-50 uppercase tracking-widest text-xs">Neural Security Boot Logs</span>
+            </div>
+            <div class="space-y-2 opacity-80 overflow-y-auto custom-scrollbar flex-1">
+                <p class="text-primary">[ 0.000000] Initializing InternShield Kernel v5.0-stateless-secure...</p>
+                <p class="text-on-surface">[ 0.452123] Loading Mime-Sniffing (Magic) engine... OK</p>
+                <p class="text-on-surface">[ 0.892011] Bleach-Sanitization layer: ENGAGED</p>
+                <p class="text-secondary">[ 1.229045] IP-Rate-Limiter: ACTIVE [5 req/min/IP]</p>
+                <p class="text-on-surface">[ 1.554032] SSL_HSTS_HARDENING: ENFORCED</p>
+                <p class="text-error">[ 2.001948] ALERT: GMAIL_GATEWAY moved to MAINTENANCE_VECTORS.</p>
+                <p class="text-primary animate-pulse">[ 2.341221] Shield v5: SECURE_PHASE_1_DEPLOYED_</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Navigation Tiles -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <a href="{% url 'scan_gmail' %}" class="block group decoration-none">
+            <div class="glass-module luminous-cyan p-8 flex flex-col justify-between aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2 opacity-80">
+                <div>
+                    <span class="material-symbols-outlined text-primary mb-6 text-4xl opacity-50">lock_clock</span>
+                    <h3 class="font-headline font-bold text-2xl tracking-tighter text-primary uppercase">GMAIL GATEWAY</h3>
+                    <p class="text-xs text-on-surface-variant mt-2 font-body">INBOX SHIELD v5</p>
+                </div>
+                <div class="text-xs font-mono text-primary group-hover:text-primary tracking-widest uppercase animate-pulse">STATUS: MAINTENANCE</div>
+            </div>
+        </a>
+        <a href="{% url 'analyze_offer' %}" class="block group decoration-none">
+            <div class="glass-module luminous-purple p-8 flex flex-col justify-between aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
+                <div>
+                    <span class="material-symbols-outlined text-secondary mb-6 text-4xl">fact_check</span>
+                    <h3 class="font-headline font-bold text-2xl tracking-tighter text-secondary uppercase">OFFER AUDIT</h3>
+                    <p class="text-xs text-on-surface-variant mt-2 font-body">PDF FORENSIC UNIT</p>
+                </div>
+                <div class="text-xs font-mono text-secondary/40 group-hover:text-secondary tracking-widest uppercase">SCAN_LATENCY: 124ms</div>
+            </div>
+        </a>
+        <a href="{% url 'paste_email' %}" class="block group decoration-none">
+            <div class="glass-module luminous-cyan p-8 flex flex-col justify-between aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
+                <div>
+                    <span class="material-symbols-outlined text-primary mb-6 text-4xl">terminal</span>
+                    <h3 class="font-headline font-bold text-2xl tracking-tighter text-primary uppercase">LIVE PASTE</h3>
+                    <h4 class="text-xs text-on-surface-variant mt-1 font-mono uppercase opacity-50">Manual Source Entry</h4>
+                </div>
+                <div class="text-xs font-mono text-primary/40 group-hover:text-primary tracking-widest uppercase">OVERRIDE: READY</div>
+            </div>
+        </a>
+        <a href="{% url 'check_domain' %}" class="block group decoration-none">
+            <div class="glass-module luminous-purple p-8 flex flex-col justify-between aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
+                <div>
+                    <span class="material-symbols-outlined text-secondary mb-6 text-4xl">radar</span>
+                    <h3 class="font-headline font-bold text-2xl tracking-tighter text-secondary uppercase">OSINT PROBE</h3>
+                    <p class="text-xs text-on-surface-variant mt-2 font-body">REGISTRY FOOTPRINT</p>
+                </div>
+                <div class="text-xs font-mono text-secondary/40 group-hover:text-secondary tracking-widest uppercase">RADIUS: GLOBAL</div>
+            </div>
+        </a>
+    </div>
+</div>
+{% endblock %}
