@@ -45,6 +45,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'web_app.middleware.VisitorTrackingMiddleware',
 ]
 
 ROOT_URLCONF = 'intern_web.urls'

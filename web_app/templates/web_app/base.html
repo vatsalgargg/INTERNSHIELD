@@ -83,9 +83,9 @@
                 <a class="text-[#00dbe7]/50 font-headline text-sm tracking-widest hover:bg-[#00dbe7]/10 transition-colors px-3 py-1" href="{% url 'paste_email' %}">PASTE</a>
                 <a class="text-[#00dbe7]/50 font-headline text-sm tracking-widest hover:bg-[#00dbe7]/10 transition-colors px-3 py-1" href="{% url 'check_domain' %}">OSINT</a>
             </nav>
-            <div class="w-8 h-8 bg-surface-container border border-primary/20 flex items-center justify-center">
+            <a href="{% url 'admin_dashboard' %}" class="w-8 h-8 bg-surface-container border border-primary/20 flex items-center justify-center hover:bg-primary/20 transition-colors" title="SECURE_ADMIN_LOGS">
                 <span class="material-symbols-outlined text-xs text-[#00dbe7]">person</span>
-            </div>
+            </a>
         </div>
     </header>
 

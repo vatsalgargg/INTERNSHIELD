@@ -1,0 +1,190 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-4xl font-headline font-bold text-primary tracking-tighter uppercase italic">Forensic_Command_Center</h1>
+            <p class="text-on-surface-variant font-mono text-xs mt-1 opacity-50">NODE_CONTROL // TRAFFIC_VISUALIZER // v5.0_SECURE</p>
+        </div>
+        <div class="glass-module px-6 py-3 border-l-4 border-primary bg-primary/5 flex items-center gap-4">
+            <div class="flex flex-col">
+                <span class="text-[10px] text-on-surface-variant uppercase tracking-[0.3em] font-mono">System_Status</span>
+                <div class="text-primary font-mono font-bold animate-pulse">{{ stats.system_integrity }}</div>
+            </div>
+            <div class="w-10 h-10 border border-primary/20 rounded-full flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary text-xl">hub</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="glass-module p-6 border-b-2 border-primary/20 hover:border-primary transition-colors group">
+            <div class="text-xs text-on-surface-variant uppercase tracking-widest mb-1 group-hover:text-primary transition-colors">Total_Packets</div>
+            <div class="text-3xl font-headline font-bold text-white">{{ stats.total_packets }}</div>
+        </div>
+        <div class="glass-module p-6 border-b-2 border-secondary/20 hover:border-secondary transition-colors group">
+            <div class="text-xs text-on-surface-variant uppercase tracking-widest mb-1 group-hover:text-secondary transition-colors">Active_Nodes</div>
+            <div class="text-3xl font-headline font-bold text-white">{{ stats.active_nodes }}</div>
+        </div>
+        <div class="glass-module p-6 border-b-2 border-primary/20 hover:border-primary transition-colors group">
+            <div class="text-xs text-on-surface-variant uppercase tracking-widest mb-1 group-hover:text-primary transition-colors">Buffer_Saturation</div>
+            <div class="flex items-baseline gap-2">
+                <div class="text-3xl font-headline font-bold text-white">{{ stats.buffer_size }}</div>
+                <div class="text-xs text-on-surface-variant opacity-50 font-mono">/ 100</div>
+            </div>
+        </div>
+        <div class="glass-module p-6 border-b-2 border-secondary/20 hover:border-secondary transition-colors group">
+            <div class="text-xs text-on-surface-variant uppercase tracking-widest mb-1 group-hover:text-secondary transition-colors">Latency_Index</div>
+            <div class="text-3xl font-headline font-bold text-white">LOW</div>
+        </div>
+    </div>
+
+    <!-- Main Console -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Live Packet Stream -->
+        <div class="lg:col-span-8 glass-module bg-black/40 p-0 flex flex-col h-[650px] overflow-hidden border-t border-primary/20 shadow-2xl">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-surface/50">
+                <div class="flex items-center gap-3">
+                    <span class="w-2 h-2 bg-primary rounded-full animate-ping"></span>
+                    <span class="font-headline font-bold text-sm tracking-widest text-primary uppercase">Live_Packet_Stream</span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="px-2 py-0.5 border border-primary/30 text-primary text-[9px] font-mono tracking-widest uppercase">Encryption: AES-Locked</span>
+                    <button onclick="window.location.reload()" class="hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined text-sm">refresh</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-3 font-mono text-sm">
+                {% for log in history %}
+                <div class="flex items-start gap-4 p-4 bg-white/[0.02] border-l-2 border-primary/20 hover:bg-white/[0.05] hover:border-primary transition-all group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-10 transition-opacity">
+                        <span class="material-symbols-outlined text-4xl">fingerprint</span>
+                    </div>
+                    <span class="text-primary opacity-40 group-hover:opacity-100 italic transition-opacity text-[10px] pt-1">[{{ log.time }}]</span>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-white font-bold tracking-tight text-xs uppercase">{{ log.ip }}</span>
+                            <div class="flex gap-2">
+                                <span class="text-[9px] bg-secondary/10 text-secondary px-2 py-0.5 border border-secondary/20">{{ log.ua }}</span>
+                                <span class="text-[9px] bg-primary/10 text-primary px-2 py-0.5 border border-primary/20">{{ log.method }}</span>
+                            </div>
+                        </div>
+                        <div class="text-xs opacity-60 flex items-center gap-2">
+                            <span class="text-[10px] bg-white/5 px-1 font-bold">VECTOR:</span>
+                            <span class="text-secondary truncate">{{ log.path }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="h-full flex flex-col items-center justify-center opacity-30 italic">
+                    <span class="material-symbols-outlined text-6xl mb-4 animate-pulse">radar</span>
+                    <p class="font-headline tracking-widest uppercase text-sm">Waiting for incoming packets...</p>
+                    <p class="text-[10px] mt-2 font-mono">Neural-Shield is scanning infrastructure perimeter</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="px-6 py-3 border-t border-white/5 bg-surface/30 flex justify-between items-center">
+                <span class="text-[10px] text-on-surface-variant font-mono uppercase">History_Buffer: 100_Packets_Max</span>
+                <div class="flex items-center gap-2">
+                   <div class="flex gap-1">
+                        <div class="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                        <div class="w-1.5 h-1.5 bg-primary/40 rounded-full"></div>
+                        <div class="w-1.5 h-1.5 bg-primary/20 rounded-full"></div>
+                   </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Diagnostics Overlay -->
+        <div class="lg:col-span-4 space-y-6 flex flex-col">
+            <div class="glass-module p-8 relative overflow-hidden flex-1 flex flex-col justify-center items-center group border-t border-secondary/20">
+                 <div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent pointer-events-none"></div>
+                 
+                <!-- Radar Visual -->
+                <div class="relative w-56 h-56 mb-10">
+                    <div class="absolute inset-0 border border-secondary/10 rounded-full"></div>
+                    <div class="absolute inset-4 border border-secondary/5 rounded-full"></div>
+                    <div class="absolute inset-10 border border-primary/20 rounded-full animate-pulse"></div>
+                    
+                    <!-- Radar Sweeper -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-primary/10 rounded-full animate-[spin_3s_linear_infinite]"></div>
+                    
+                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                        <span class="material-symbols-outlined text-5xl text-primary opacity-60 group-hover:scale-110 transition-transform mb-2">analytics</span>
+                        <span class="text-[9px] font-mono text-primary animate-pulse uppercase tracking-tighter">Scanning_IO</span>
+                    </div>
+                </div>
+
+                <h3 class="font-headline font-bold text-xl text-white tracking-widest uppercase mb-2">Neural_Traffic_Load</h3>
+                <p class="text-center text-xs text-on-surface-variant font-mono opacity-60 leading-relaxed uppercase max-w-[200px]">
+                    Volatile memory buffer initialized. Integrity check: 100%. Data wipes occur on instance spin-down.
+                </p>
+
+                <div class="mt-10 pt-10 border-t border-white/5 w-full space-y-6">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-[10px] font-mono uppercase tracking-[0.2em]">
+                            <span>CPU_Load</span>
+                            <span class="text-primary italic">Minimal</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full w-[15%] shadow-[0_0_15px_#00dbe7] transition-all duration-1000"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-[10px] font-mono uppercase tracking-[0.2em]">
+                            <span>Cache_Memory</span>
+                            <span class="text-secondary italic">Volatile</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                            <div class="bg-secondary h-full w-[8%] shadow-[0_0_15px_#dfb7ff] transition-all duration-1000"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-[10px] font-mono uppercase tracking-[0.2em]">
+                            <span>Neural_Shield</span>
+                            <span class="text-primary italic">Active</span>
+                        </div>
+                        <div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full w-[99%] shadow-[0_0_15px_#00dbe7] animate-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Warning Box -->
+            <div class="glass-module p-6 bg-error/5 border-l-4 border-error">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="material-symbols-outlined text-error">warning</span>
+                    <span class="text-xs font-headline font-bold text-error uppercase tracking-widest">Protocol_Alert</span>
+                </div>
+                <p class="text-[10px] text-on-surface-variant opacity-60 leading-tight uppercase font-mono">
+                    Any unauthorized access attempt is automatically logged with original system signature. Neural-Shield v5 is actively hardening connections.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(0, 219, 231, 0.2);
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 219, 231, 0.5);
+    }
+</style>
+{% endblock %}

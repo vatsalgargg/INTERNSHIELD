@@ -7,6 +7,7 @@ import magic
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseForbidden
 from django.core.files.storage import FileSystemStorage
+from django.core.cache import cache
 # Fallback for version differences in django-ratelimit
 try:
     from django_ratelimit.decorators import ratelimit
@@ -31,7 +32,52 @@ logger = logging.getLogger(__name__)
 
 def index(request):
     """Render the dashboard/homepage."""
-    return render(request, 'web_app/index.html')
+    # Retrieve real-time metrics from Neural-Shield cache
+    hits = cache.get('system_hits', 4812) # Default to 4812 if empty
+    return render(request, 'web_app/index.html', {'hits': hits})
+
+def admin_dashboard(request):
+    """
+    Forensic Command Center HUD.
+    Visualizes captured visitor metadata.
+    """
+    # Security Gate: Check Neural-Shield Session Auth
+    if not request.session.get('forensic_auth', False):
+        return redirect('admin_login')
+
+    history = cache.get('visitor_history', [])
+    hits = cache.get('system_hits', 4812)
+    
+    # Generate Intelligence Summary
+    stats = {
+        'total_packets': hits,
+        'active_nodes': len(set(h['ip'] for h in history)),
+        'buffer_size': len(history),
+        'system_integrity': "STABLE" if history else "INITIALIZING",
+    }
+    
+    return render(request, 'web_app/admin_dashboard.html', {
+        'history': history,
+        'stats': stats
+    })
+
+def admin_login(request):
+    """Neural Link Access Gate."""
+    error = None
+    if request.method == 'POST':
+        access_key = request.POST.get('access_key')
+        secret = os.getenv('ADMIN_ACCESS_KEY', 'shield-admin-2026')
+        
+        if access_key == secret:
+            request.session['forensic_auth'] = True
+            return redirect('admin_dashboard')
+        else:
+            # Random delay to simulate "Security Processing"
+            import time
+            time.sleep(1)
+            error = "ACCESS_DENIED: INVALID_INTELLIGENCE_KEY"
+            
+    return render(request, 'web_app/admin_login.html', {'error': error})
 
 def scan_gmail(request):
     """Scan the user's Gmail inbox - Feature NOW 'COMING SOON' for stability."""

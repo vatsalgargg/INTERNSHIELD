@@ -9,4 +9,6 @@ urlpatterns = [
     path('offer/', views.analyze_offer, name='analyze_offer'),
     path('paste/', views.paste_email, name='paste_email'),
     path('domain/', views.check_domain, name='check_domain'),
+    path('admin-forensics/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin-gate/', views.admin_login, name='admin_login'),
 ]

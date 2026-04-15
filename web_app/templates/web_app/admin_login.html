@@ -1,0 +1,66 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+<div class="h-[75vh] flex items-center justify-center animate-in fade-in zoom-in duration-700">
+    <div class="glass-module w-full max-w-md p-10 border-t-4 border-primary relative overflow-hidden shadow-2xl">
+        <!-- Background Accents -->
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="text-center mb-10">
+            <div class="w-16 h-16 bg-surface-container border border-primary/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_20px_rgba(0,219,231,0.1)] group overflow-hidden">
+                <span class="material-symbols-outlined text-3xl text-primary animate-pulse group-hover:scale-110 transition-transform">fingerprint</span>
+            </div>
+            <h1 class="font-headline font-bold text-2xl tracking-widest text-white uppercase italic">Neural_Link_Required</h1>
+            <p class="text-[10px] text-on-surface-variant font-mono mt-2 opacity-50 uppercase tracking-tighter leading-tight">Enter Forensic_Access_Key to decrypt intelligence streams.<br>Identity verification in progress...</p>
+        </div>
+
+        {% if error %}
+        <div class="bg-error/10 border-l-4 border-error p-3 mb-6 animate-shake">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-sm text-error">gavel</span>
+                <span class="text-[10px] font-mono font-bold text-error uppercase tracking-widest">{{ error }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div class="relative group">
+                    <input type="password" name="access_key" required autofocus
+                        class="w-full bg-black/60 border border-white/5 px-4 py-5 font-mono text-center tracking-[1em] text-primary focus:outline-none focus:border-primary/50 transition-all placeholder:tracking-normal placeholder:opacity-20 text-lg"
+                        placeholder="••••••••••••">
+                    <div class="absolute bottom-0 left-0 h-0.5 bg-primary w-0 group-focus-within:w-full transition-all duration-500 shadow-[0_0_10px_#00dbe7]"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-surface-container border border-primary/20 py-4 font-headline font-bold text-sm tracking-[0.3em] uppercase text-primary hover:bg-primary/20 hover:border-primary transition-all active:scale-95 group relative overflow-hidden">
+               <span class="relative z-10">Transmit_Key</span>
+               <div class="absolute inset-0 bg-primary/5 -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                <span class="inline-block transform group-hover:translate-x-1 transition-transform ml-2 relative z-10">→</span>
+            </button>
+        </form>
+
+        <div class="mt-8 text-center flex flex-col gap-2">
+            <div class="flex justify-center gap-1 opacity-20">
+                <div class="w-1 h-1 bg-primary rounded-full"></div>
+                <div class="w-1 h-1 bg-primary rounded-full"></div>
+                <div class="w-1 h-1 bg-primary rounded-full"></div>
+            </div>
+            <span class="text-[8px] font-mono text-on-surface-variant opacity-30 uppercase tracking-[0.5em]">Identity_Signature_v5.0_Secure_Stream</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    .animate-shake {
+        animation: shake 0.4s ease-in-out;
+    }
+</style>
+{% endblock %}
