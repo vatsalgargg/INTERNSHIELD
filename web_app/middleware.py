@@ -10,8 +10,10 @@ class VisitorTrackingMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # We don't track the admin dashboard itself to avoid infinite feedback for auto-refreshing stats
-        if request.path.startswith('/admin-forensics/') or request.path.startswith('/static/'):
+        # Neural-Shield Exclusion: Do not log admin dashboard, static assets, or the login gate
+        if (request.path.startswith('/admin-forensics/') or 
+            request.path.startswith('/admin-gate/') or 
+            request.path.startswith('/static/')):
             return self.get_response(request)
 
         # 1. Increment Neural-Shield Detection Counter
