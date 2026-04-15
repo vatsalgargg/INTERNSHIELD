@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 def index(request):
     """Render the dashboard/homepage."""
     # Retrieve real-time metrics from Neural-Shield cache
-    hits = cache.get('system_hits', 4812) # Default to 4812 if empty
+    hits = cache.get('system_hits', 0) # Baseline reset to 0
     return render(request, 'web_app/index.html', {'hits': hits})
 
 def admin_dashboard(request):
@@ -46,7 +46,7 @@ def admin_dashboard(request):
         return redirect('admin_login')
 
     history = cache.get('visitor_history', [])
-    hits = cache.get('system_hits', 4812)
+    hits = cache.get('system_hits', 0)
     
     # Generate Intelligence Summary
     stats = {
