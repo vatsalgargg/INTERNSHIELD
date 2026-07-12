@@ -35,6 +35,8 @@ CACHES = {
 INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sessions',
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
     'web_app',
 ]
 
