@@ -44,3 +44,6 @@ client_secret.json
 .env.production
 .env.local
 .env.*
+
+# Azure CLI temp files
+budget.json

@@ -4,13 +4,46 @@
 
 ---
 
-## 🌐 Live Infrastructure (Template)
-- **Status**: TEMPLATE_READY
-- **Deployment Strategy**: 100% Stateless Dockerized Ops on Google Cloud Run.
+## 🌐 Live Infrastructure
+
+- **Status**: LIVE
+- **Primary URL**: [https://internshield.eastasia.azurecontainerapps.io](https://internshield.eastasia.azurecontainerapps.io)
+- **Deployment Strategy**: 100% Stateless Dockerized Ops on **Microsoft Azure Container Apps**
+- **Cloud Provider**: Microsoft Azure (East Asia region)
+- **Registry**: Azure Container Registry (`internshieldacr.azurecr.io`)
+
+---
+
+## 🏗️ Architecture Overview
+
+```
+GitHub (source)
+      │
+      │  az acr build
+      ▼
+Azure Container Registry
+internshieldacr.azurecr.io/internshield:latest
+      │
+      │  az containerapp create
+      ▼
+Azure Container Apps (East Asia)
+      │
+      ▼
+https://internshield.eastasia.azurecontainerapps.io
+```
+
+### Infrastructure Components
+| Component | Azure Service | Details |
+|-----------|--------------|---------|
+| Container Registry | Azure Container Registry (Basic) | Stores Docker image |
+| Runtime | Azure Container Apps | Serverless, scales to zero |
+| Networking | Built-in Azure ingress | HTTPS, auto-TLS |
+| Secrets | Container App env vars | Injected at deploy time |
 
 ---
 
 ## 🛡️ "Neural-Shield" Security Posture (v5.0)
+
 InternShield is built on a **Zero-Persistence** security model, making it immune to data breaches through the following layers:
 
 ### 1. Forensic Input Validation
@@ -21,7 +54,7 @@ InternShield is built on a **Zero-Persistence** security model, making it immune
 ### 2. Network & Header Fortification
 - **SSL Enforcement (HSTS)**: Rigid 1-year HSTS policy ensuring all traffic is encrypted.
 - **CSP (Content-Security-Policy)**: Strictly restrictive policy preventing unauthorized script execution or data exfiltration.
-- **Host Lockdown**: Wildcard `ALLOWED_HOSTS` have been removed; only verified Cloud Run and local domains are trusted.
+- **Host Lockdown**: Only verified Azure Container Apps and local domains are trusted via `ALLOWED_HOSTS`.
 
 ### 3. Abuse Prevention
 - **IP-Based Throttling**: Integrated **Rate Limiting** protects your search API quotas (Serper.dev/WHOIS) from automated bot abuse and scraping.
@@ -50,7 +83,7 @@ InternShield is built on a **Zero-Persistence** security model, making it immune
 
 ---
 
-## 🛠️ Technical Implementation
+## 🛠️ Technical Stack
 
 ### The Neural Core (`core/`)
 - **`analyzer.py`**: The Central Executive. Synthesizes infrastructure and content signals into a unified Risk Score.
@@ -59,25 +92,78 @@ InternShield is built on a **Zero-Persistence** security model, making it immune
 
 ### The UI Engine (`web_app/`)
 - **Brutalist Glassmorphism**: High-contrast, focused HUD designed for forensic analysis.
-- **Gevent/Gunicorn**: Optimized for high-concurrency stateless operations on Cloud Run.
+- **Gevent/Gunicorn**: Optimized for high-concurrency stateless operations on Azure Container Apps.
+
+### Infrastructure
+- **Docker**: Multi-stage build (builder + final slim image)
+- **Azure Container Registry**: Private Docker image storage
+- **Azure Container Apps**: Serverless container runtime, auto-scales to zero
+- **WhiteNoise**: Static file serving without a CDN
 
 ---
 
-## ⚙️ Build & Deploy
+## ⚙️ Build & Deploy (Azure)
 
-### Environment Configuration
-Ensure these are set in your `.env` or deployment console:
-- `SERPER_API_KEY`: Required for Web Intelligence.
-- `DJANGO_SECRET_KEY`: Production-grade random string.
-- `ALLOWED_HOSTS`: Restricted domain patterns.
-
-### Deployment Commands
+### Prerequisites
 ```bash
-# 1. Build the Forensic Image
-gcloud builds submit --tag gcr.io/[PROJECT_ID]/internshield
+# Install Azure CLI
+winget install Microsoft.AzureCLI
 
-# 2. Deploy to Cloud Run
-gcloud run deploy internshield --image gcr.io/[PROJECT_ID]/internshield --region us-central1 --allow-unauthenticated
+# Login
+az login --use-device-code
+```
+
+### Environment Variables Required
+Set these in Azure Container Apps (never commit to git):
+
+| Variable | Description |
+|----------|-------------|
+| `DJANGO_SECRET_KEY` | Strong random secret key |
+| `DJANGO_DEBUG` | Set to `False` in production |
+| `ALLOWED_HOSTS` | Your Container App domain |
+| `CSRF_TRUSTED_ORIGINS` | `https://` + your domain |
+| `SERPER_API_KEY` | Required for Web Intelligence |
+| `ADMIN_ACCESS_KEY` | Admin dashboard access |
+| `PORT` | Set to `8000` |
+
+### Full Deployment Commands
+```bash
+# 1. Create resource group
+az group create --name internshield-rg --location eastasia
+
+# 2. Create container registry
+az acr create --resource-group internshield-rg --name internshieldacr --sku Basic --admin-enabled true
+
+# 3. Register required providers
+az provider register --namespace Microsoft.ContainerRegistry
+az provider register --namespace Microsoft.App
+az provider register --namespace Microsoft.OperationalInsights
+
+# 4. Build and push Docker image
+az acr build --registry internshieldacr --image internshield:latest --resource-group internshield-rg --no-logs .
+
+# 5. Create Container Apps environment
+az containerapp env create --name internshield-env --resource-group internshield-rg --location eastasia
+
+# 6. Deploy
+az containerapp create \
+  --name internshield \
+  --resource-group internshield-rg \
+  --environment internshield-env \
+  --image internshieldacr.azurecr.io/internshield:latest \
+  --registry-server internshieldacr.azurecr.io \
+  --ingress external \
+  --target-port 8000 \
+  --min-replicas 0 \
+  --max-replicas 2 \
+  --env-vars \
+    DJANGO_SECRET_KEY=your-secret-key \
+    DJANGO_DEBUG=False \
+    PORT=8000 \
+    ALLOWED_HOSTS=your-app.eastasia.azurecontainerapps.io \
+    CSRF_TRUSTED_ORIGINS=https://your-app.eastasia.azurecontainerapps.io \
+    SERPER_API_KEY=your-serper-key \
+    ADMIN_ACCESS_KEY=your-admin-key
 ```
 
 ---

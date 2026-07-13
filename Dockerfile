@@ -42,5 +42,5 @@ RUN DJANGO_SECRET_KEY=NS-BUILD-KEY python manage.py collectstatic --noinput
 
 # Gunicorn execution on $PORT
 # --workers 2: reduced from 4 to lower memory pressure and startup time
-# NOTE: --preload is intentionally omitted — it is incompatible with gevent monkey-patching
+# NOTE: --preload is intentionally omitted - it is incompatible with gevent monkey-patching
 CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:$PORT --workers 2 --worker-class gevent --timeout 120 --graceful-timeout 30 --keep-alive 5 intern_web.wsgi:application"]
