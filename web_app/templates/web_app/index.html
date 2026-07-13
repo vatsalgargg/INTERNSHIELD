@@ -22,24 +22,24 @@
                 <!-- Radar Sweeper -->
                 <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-primary/10 rounded-full animate-[spin_4s_linear_infinite]"></div>
                 
-                <div class="text-center z-10">
-                    <span class="block text-7xl font-headline font-bold text-primary mb-1 tracking-tighter">98.2</span>
-                    <span class="text-xs font-mono text-on-surface-variant tracking-[0.3em] uppercase">Security_Trust_Score</span>
+                <div class="text-center z-10 p-4">
+                    <span class="block text-4xl sm:text-5xl md:text-7xl font-headline font-bold text-primary mb-1 tracking-tighter">98.2</span>
+                    <span class="text-[8px] sm:text-xs font-mono text-on-surface-variant tracking-[0.1em] sm:tracking-[0.3em] uppercase">Security_Trust_Score</span>
                 </div>
             </div>
 
             <div class="mt-6 md:mt-8 grid grid-cols-3 gap-4 sm:gap-8 md:gap-12 w-full max-w-lg">
                 <div class="text-center">
-                    <div class="text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Scanning</div>
-                    <div class="text-primary font-mono text-xl">ONLINE</div>
+                    <div class="text-[10px] sm:text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Scanning</div>
+                    <div class="text-primary font-mono text-base sm:text-xl">ONLINE</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Detections</div>
-                    <div class="text-secondary font-mono text-xl">{{ hits }}</div>
+                    <div class="text-[10px] sm:text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Detections</div>
+                    <div class="text-secondary font-mono text-base sm:text-xl">{{ hits }}</div>
                 </div>
                 <div class="text-center">
-                    <div class="text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Uptime</div>
-                    <div class="text-primary font-mono text-xl">99.9%</div>
+                    <div class="text-[10px] sm:text-[12px] text-on-surface-variant mb-1 uppercase tracking-widest">Uptime</div>
+                    <div class="text-primary font-mono text-base sm:text-xl">99.9%</div>
                 </div>
             </div>
         </div>
@@ -67,7 +67,7 @@
     <!-- Bottom Row: Navigation Tiles -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <a href="{% url 'scan_gmail' %}" class="block group decoration-none">
-            <div class="glass-module luminous-cyan p-8 flex flex-col justify-between aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2 opacity-80">
+            <div class="glass-module luminous-cyan p-6 sm:p-8 flex flex-col justify-between min-h-[160px] sm:aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2 opacity-80">
                 <div>
                     <span class="material-symbols-outlined text-primary mb-6 text-4xl opacity-50">lock_clock</span>
                     <h3 class="font-headline font-bold text-2xl tracking-tighter text-primary uppercase">GMAIL GATEWAY</h3>
@@ -77,7 +77,7 @@
             </div>
         </a>
         <a href="{% url 'analyze_offer' %}" class="block group decoration-none">
-            <div class="glass-module luminous-purple p-8 flex flex-col justify-between aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
+            <div class="glass-module luminous-purple p-6 sm:p-8 flex flex-col justify-between min-h-[160px] sm:aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
                 <div>
                     <span class="material-symbols-outlined text-secondary mb-6 text-4xl">fact_check</span>
                     <h3 class="font-headline font-bold text-2xl tracking-tighter text-secondary uppercase">OFFER AUDIT</h3>
@@ -87,7 +87,7 @@
             </div>
         </a>
         <a href="{% url 'paste_email' %}" class="block group decoration-none">
-            <div class="glass-module luminous-cyan p-8 flex flex-col justify-between aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
+            <div class="glass-module luminous-cyan p-6 sm:p-8 flex flex-col justify-between min-h-[160px] sm:aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
                 <div>
                     <span class="material-symbols-outlined text-primary mb-6 text-4xl">terminal</span>
                     <h3 class="font-headline font-bold text-2xl tracking-tighter text-primary uppercase">LIVE PASTE</h3>
@@ -97,7 +97,7 @@
             </div>
         </a>
         <a href="{% url 'check_domain' %}" class="block group decoration-none">
-            <div class="glass-module luminous-purple p-8 flex flex-col justify-between aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
+            <div class="glass-module luminous-purple p-6 sm:p-8 flex flex-col justify-between min-h-[160px] sm:aspect-square hover:bg-surface-container transition-all group-hover:-translate-y-2">
                 <div>
                     <span class="material-symbols-outlined text-secondary mb-6 text-4xl">radar</span>
                     <h3 class="font-headline font-bold text-2xl tracking-tighter text-secondary uppercase">OSINT PROBE</h3>
