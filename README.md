@@ -6,8 +6,8 @@
 
 ## 🌐 Live Infrastructure
 
-- **Status**: LIVE
-- **Primary URL**: [https://internshield.eastasia.azurecontainerapps.io](https://internshield.eastasia.azurecontainerapps.io)
+- **Status**: LIVE ✅
+- **Primary URL**: [https://internshield.braveflower-49001aa3.eastasia.azurecontainerapps.io](https://internshield.braveflower-49001aa3.eastasia.azurecontainerapps.io)
 - **Deployment Strategy**: 100% Stateless Dockerized Ops on **Microsoft Azure Container Apps**
 - **Cloud Provider**: Microsoft Azure (East Asia region)
 - **Registry**: Azure Container Registry (`internshieldacr.azurecr.io`)
