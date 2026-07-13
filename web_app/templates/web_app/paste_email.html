@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 pb-20">
-    <div class="glass-module luminous-cyan p-10 relative overflow-hidden">
+    <div class="glass-module luminous-cyan p-5 sm:p-8 md:p-10 relative overflow-hidden">
         <!-- Background Decoration -->
         <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle, #00dbe7 1px, transparent 1px); background-size: 24px 24px;"></div>
         
@@ -22,13 +22,13 @@
                         <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
                         [01] PACKET_PAYLOAD (PASTE_TEXT)
                     </label>
-                    <textarea id="raw_email" name="raw_email" rows="12" 
-                              class="w-full bg-black/60 border border-white/10 p-6 text-white font-mono text-sm focus:border-primary/50 focus:outline-none transition-all placeholder:text-surface-variant/20 custom-scrollbar"
+                    <textarea id="raw_email" name="raw_email" rows="10" 
+                              class="w-full bg-black/60 border border-white/10 p-3 sm:p-6 text-white font-mono text-sm focus:border-primary/50 focus:outline-none transition-all placeholder:text-surface-variant/20 custom-scrollbar"
                               placeholder="From: hr@corporate-entity.com&#10;Subject: Job Offer Verification&#10;&#10;Paste headers + body for deep forensic scan..." required></textarea>
                 </div>
 
                 <!-- Context Probe Area -->
-                <div class="bg-surface-container/30 border border-white/10 p-8 space-y-6">
+                <div class="bg-surface-container/30 border border-white/10 p-4 sm:p-8 space-y-6">
                     <div class="space-y-1">
                         <label class="font-headline text-xs font-bold text-secondary uppercase tracking-widest flex items-center gap-2">
                             <span class="material-symbols-outlined text-sm">help</span>

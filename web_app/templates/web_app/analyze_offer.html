@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
-    <div class="glass-module luminous-purple p-10 relative overflow-hidden">
+    <div class="glass-module luminous-purple p-5 sm:p-8 md:p-10 relative overflow-hidden">
         <!-- Background Decoration -->
         <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle, #dfb7ff 1px, transparent 1px); background-size: 24px 24px;"></div>
         
@@ -17,7 +17,7 @@
                 {% csrf_token %}
                 <div class="group relative">
                     <label for="offer_letter" class="block cursor-pointer transition-all">
-                        <div class="border-2 border-dashed border-secondary/30 bg-black/40 p-12 flex flex-col items-center gap-4 group-hover:bg-secondary/5 group-hover:border-secondary transition-all">
+                        <div class="border-2 border-dashed border-secondary/30 bg-black/40 p-6 sm:p-12 flex flex-col items-center gap-4 group-hover:bg-secondary/5 group-hover:border-secondary transition-all">
                             <span class="material-symbols-outlined text-secondary text-6xl group-hover:scale-110 transition-transform duration-500">upload_file</span>
                             <div class="space-y-1">
                                 <p class="font-headline text-sm font-black text-secondary uppercase tracking-[0.2em]">UPLOAD_OFFER_PACKET</p>

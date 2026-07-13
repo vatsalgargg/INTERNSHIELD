@@ -1,10 +1,10 @@
 {% extends "web_app/base.html" %}
 
 {% block content %}
-<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10 animate-in fade-in slide-in-from-left duration-700">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6 md:mb-10 animate-in fade-in slide-in-from-left duration-700">
     <div class="space-y-1">
         <span class="font-headline text-[10px] tracking-[0.2em] text-primary/60 uppercase">Dossier Retrieval Sequence</span>
-        <h2 class="font-headline text-3xl font-bold text-primary italic uppercase tracking-tighter">
+        <h2 class="font-headline text-xl sm:text-3xl font-bold text-primary italic uppercase tracking-tighter break-all">
             OSINT_DOSSIER: {{ company_name|default:"UNIDENTIFIED_TARGET"|upper }}
         </h2>
         <p class="font-mono text-[10px] text-on-surface-variant uppercase">
@@ -23,7 +23,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- 01: Domain Network Intel -->
         {% if domain_result %}
-        <section class="lg:col-span-6 glass-module luminous-purple p-8 flex flex-col gap-8">
+        <section class="lg:col-span-6 glass-module luminous-purple p-4 sm:p-8 flex flex-col gap-6 md:gap-8">
             <div class="flex justify-between items-start">
                 <div class="space-y-1">
                     <span class="font-headline text-[10px] tracking-[0.2em] text-secondary/60 uppercase">Protocol: WHOIS_SCRAPE</span>
@@ -59,20 +59,64 @@
             <!-- SSL Profile Terminal -->
             <div class="bg-surface-container/50 p-6 space-y-3 font-mono text-[10px]">
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="material-symbols-outlined text-xs text-secondary">lock</span>
+                    <span class="material-symbols-outlined text-xs {% if domain_result.ssl_info.error %}text-error{% else %}text-secondary{% endif %}">
+                        {% if domain_result.ssl_info.error %}lock_open{% else %}lock{% endif %}
+                    </span>
                     <span class="text-secondary/60 uppercase tracking-widest">SSL_Security_Profile</span>
                 </div>
-                <div class="flex justify-between">
-                    <span class="opacity-40">ISSUER:</span>
-                    <span class="text-white">{{ domain_result.ssl_info.issuer|truncatechars:30 }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="opacity-40">TRUST_LEVEL:</span>
-                    <span class="{% if "Let's Encrypt" in domain_result.ssl_info.issuer %}text-yellow-500{% else %}text-green-500{% endif %}">
-                        {% if "Let's Encrypt" in domain_result.ssl_info.issuer %}FREE_DOMAIN_VALIDATED{% else %}ORGANIZATION_VERIFIED{% endif %}
-                    </span>
-                </div>
+                {% if domain_result.ssl_info.error %}
+                    <div class="flex justify-between">
+                        <span class="opacity-40">STATUS:</span>
+                        <span class="text-error font-bold">NO_SSL_DETECTED</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-40">ISSUER:</span>
+                        <span class="text-error/60">UNAVAILABLE</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-40">TRUST_LEVEL:</span>
+                        <span class="text-error font-bold">UNVERIFIED</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-40">EXPIRY:</span>
+                        <span class="text-error/60">N/A</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-40">DAYS_LEFT:</span>
+                        <span class="text-error/60">N/A</span>
+                    </div>
+                {% else %}
+                    <div class="flex justify-between">
+                        <span class="opacity-40">ISSUER:</span>
+                        <span class="text-white">{{ domain_result.ssl_info.issuer|default:"Unknown"|truncatechars:35 }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-40">TRUST_LEVEL:</span>
+                        {% if domain_result.ssl_info.issuer %}
+                            {% if "Let's Encrypt" in domain_result.ssl_info.issuer %}
+                                <span class="text-yellow-500 font-bold">FREE_DOMAIN_VALIDATED</span>
+                            {% else %}
+                                <span class="text-green-500 font-bold">ORGANIZATION_VERIFIED</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-error font-bold">UNVERIFIED</span>
+                        {% endif %}
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-40">EXPIRY:</span>
+                        <span class="{% if domain_result.ssl_info.days_to_expiry < 30 %}text-error animate-pulse{% else %}text-white{% endif %}">
+                            {{ domain_result.ssl_info.expiry|default:"UNKNOWN" }}
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-40">DAYS_LEFT:</span>
+                        <span class="font-bold {% if domain_result.ssl_info.days_to_expiry < 30 %}text-error animate-pulse{% elif domain_result.ssl_info.days_to_expiry < 90 %}text-yellow-500{% else %}text-green-500{% endif %}">
+                            {{ domain_result.ssl_info.days_to_expiry|default:"UNKNOWN" }}{% if domain_result.ssl_info.days_to_expiry %} DAYS{% endif %}
+                        </span>
+                    </div>
+                {% endif %}
             </div>
+
         </section>
         {% endif %}
 
